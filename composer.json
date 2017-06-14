@@ -1,0 +1,14 @@
+{
+    "name": "busybee/qbotowoo",
+    "description": "An open sour utility to manage WooCommerce inventory with Quickbooks",
+    "type": "project",
+    "require": {
+        "automattic/woocommerce": "^1.3"
+    },
+    "authors": [
+        {
+            "name": "Schuyler Ankele",
+            "email": "schuyler.ankele@gmail.com"
+        }
+    ]
+}
