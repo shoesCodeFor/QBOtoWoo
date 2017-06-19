@@ -1,69 +1,124 @@
 <?php
-
-
-$settings = parse_ini_file("file.ini");
-
+/*      WooConnect.php
+*       This wil provides functions to connect and
+*       interact with the WooCommerce API
+*/
+// Load Composer build
 require __DIR__ . '/vendor/autoload.php';
-
 use Automattic\WooCommerce\Client;
-
-$woocommerce = new Client(
-    $settings['woo-url'], 
-    $settings['ck'], 
-    $settings['cs'],
-    [
-        'wp_api' => true,
-        'version' => 'wc/v1',
-    ]
-);
-
 use Automattic\WooCommerce\HttpClient\HttpClientException;
-
-try {
-    // Array of response results.
-    $results = $woocommerce->get('products');
-    // Example: ['customers' => [[ 'id' => 8, 'created_at' => '2015-05-06T17:43:51Z', 'email' => ...
-
-    // Last request data.
-    $lastRequest = $woocommerce->http->getRequest();
-    $lastRequest->getUrl(); // Requested URL (string).
-    $lastRequest->getMethod(); // Request method (string).
-    $lastRequest->getParameters(); // Request parameters (array).
-    $lastRequest->getHeaders(); // Request headers (array).
-    $lastRequest->getBody(); // Request body (JSON).
-
-    // Last response data.
-    $lastResponse = $woocommerce->http->getResponse();
-    $lastResponse->getCode(); // Response code (int).
-    $lastResponse->getHeaders(); // Response headers (array).
-    $productArray = $lastResponse->getBody(); // Response body (JSON).
-    echo 'Product Array as JSON';
-    echo $productArray;
-    echo 'product array as php ';
-    $obj = json_decode($productArray);
-    var_dump($obj);
-    echo '<br>';
+class WooConnect{
     
+
+    /* DEVELOPMENT ONLY
+    *  Parse our ini file created by install
+    *  For production I need to refactor this to the Worpress settings in db
+    */
     
-    echo $obj[0]->id;
-    echo $obj[0]->sku;
-    echo $obj[0]->name;
-    echo $obj[0]->price;
-    foreach($obj as $product){
-        echo $product->id;
+    public $settings = array();
+    public $api_conn;
+
+    public function loadSettings(){
+        $settingsFile = 'file.ini';
+        try {
+            $this->settings = parse_ini_file($settingsFile);
+            return true;
+            // var_dump($this->settings);
+        }
+        catch (Exception $e) {
+            die($e->getMessage());
+        }
     }
-    for($i = 0; $i < sizeof($obj); $i++){
-        echo $obj[$i]->id;
+
+    
+    // Call storeConnect to open a new connection to the API
+    public function storeConnect() { 
+        try{
+            $woocommerce = new Client(
+            $this->settings['woo-url'], 
+            $this->settings['ck'], 
+            $this->settings['cs'],
+            [
+                'wp_api' => true,
+                'version' => 'wc/v1',
+            ]
+            );
+            $this->api_conn = $woocommerce;
+            echo 'Success?';
+            // var_dump($this->api_conn);
+        }
+        catch(ClientException $e){
+            $e->getMessage(); // Error message.
+        $e->getRequest(); // Last request data.
+        $e->getResponse(); // Last response data.
+        $err_msg = htmlspecialchars('Could not connect to the WooCommerce API'.
+                   '<br>The URL provided in settings is: ' . $settings['woo-url'] .
+                   '<br>Your Consumer Key: ' . $settings['ck'] .
+                   '<br>Your Consumer Secret: ' .$settings['cs']);
+        echo $err_msg;
+        }
     }
     
-} catch (HttpClientException $e) {
-    $e->getMessage(); // Error message.
-    $e->getRequest(); // Last request data.
-    $e->getResponse(); // Last response data.
-    $err_msg = 'Nothing yet.  Lets debug WooCommerce.';
-    echo $err_msg;
+    // Now that we have a client lets make some requests
+    public function getFromWoo($query){
+
+        try {
+        // Array of response results.
+        // To pull all products call getFromWoo('products')
+        $results = $this->api_conn->get($query);
+        // Example: ['customers' => [[ 'id' => 8, 'created_at' => '2015-05-06T17:43:51Z', 'email' => ...
+
+        // Last request data.
+        $lastRequest = $this->api_conn->http->getRequest();
+        $lastRequest->getUrl(); // Requested URL (string).
+        $lastRequest->getMethod(); // Request method (string).
+        $lastRequest->getParameters(); // Request parameters (array).
+        $lastRequest->getHeaders(); // Request headers (array).
+        $lastRequest->getBody(); // Request body (JSON).
+
+        // Last response data.
+        $lastResponse = $this->api_conn->http->getResponse();
+        $lastResponse->getCode(); // Response code (int).
+        $lastResponse->getHeaders(); // Response headers (array).
+        $productArray = $lastResponse->getBody(); // Response body (JSON).
+        echo 'Product Array as JSON';
+        echo $productArray;
+        echo 'product array as php ';
+        $obj = json_decode($productArray);
+        var_dump($obj);
+        echo '<br>';
+
+
+        echo $obj[0]->id;
+        echo $obj[0]->sku;
+        echo $obj[0]->name;
+        echo $obj[0]->price;
+        foreach($obj as $product){
+            echo $product->id;
+        }
+        for($i = 0; $i < sizeof($obj); $i++){
+            echo $obj[$i]->id;
+        }
+
+    } catch (HttpClientException $e) {
+        $e->getMessage(); // Error message.
+        $e->getRequest(); // Last request data.
+        $e->getResponse(); // Last response data.
+        $err_msg = 'Nothing yet.  Lets debug WooCommerce.';
+        echo $err_msg;
+    }
+
+
+    }
+ 
+    
 }
 
+$connection = new WooConnect();
+
+$connection->loadSettings();
+$connection->storeConnect();
+$connection->getFromWoo('products');
 
 
 
