@@ -8,37 +8,66 @@
 
 // Product properties
 class WooProducts {
+    //  This is probably obssessive, but I like details
     private $id;	          // integer	Unique identifier for the resource. READ-ONLY
+    
     private $name;	          // string	    Product name.
+    
     private $slug;            // string     Product slug.
+    
     private $date_created;    // permalink	string	Product URL. READ-ONLY
-    private $date_created_gmt;//date-time
-                              // The date the product was created, as GMT. READ-ONLY
+    
+    private $date_created_gmt;//date-time   The date the product was created, as GMT. READ-ONLY
+    
     private $date_modified;	  // date-time	The date the product was last modified, in the site’s timezone. READ-ONLY
+    
     private $date_modified_gmt;// date-time	The date the product was last modified, as GMT. READ-ONLY
+    
     private $type;             //	string	Product type. Options: simple, grouped, external and variable. Default is simple.
-    private $status; //	string	Product status (post status). Options: draft, pending, private and publish. Default is publish.
-    private $featured; //	boolean	Featured product. Default is false.
-    private $catalog_visibility;//	string	Catalog visibility. Options: visible, catalog, search and hidden. Default is visible.
-    private $description;//	string	Product description.
-    private $short_description;//	string	Product short description.
-    private $sku;//	string	Unique identifier.
-    private $price;//	string	Current product price. READ-ONLY
-    private $regular_price;//	string	Product regular price.
-    private $sale_price;//	string	Product sale price.
-    private $date_on_sale_from;//	date-time	Start date of sale price, in the site’s timezone.
-    private $date_on_sale_from_gmt;//	date-time	Start date of sale price, as GMT.
-    private $date_on_sale_to;//	date-time	End date of sale price, in the site’s timezone.
-    private $date_on_sale_to_gmt;//	date-time	End date of sale price, in the site’s timezone.
-    private $price_html;//	string	Price formatted in HTML. READ-ONLY
-    private $on_sale;	//boolean	Shows if the product is on sale. READ-ONLY
-    private $purchasable;	//boolean	Shows if the product can be bought. READ-ONLY
-    private $total_sales;	// integer	Amount of sales. READ-ONLY
-    private $virtual;	//boolean	If the product is virtual. Default is false.
-    private $downloadable;//	boolean	If the product is downloadable. Default is false.
-    private $downloads;//	array	List of downloadable files. See Product - Downloads properties
-    private $download_limit; //	integer	Number of times downloadable files can be downloaded after purchase. Default is -1.
-    private $download_expiry;  //	integer	Number of days until access to downloadable files expires. Default is -1.
+    
+    private $status;                //	string	Product status (post status). Options: draft, pending, private and publish. Default is publish.
+    
+    private $featured;              //	boolean	Featured product. Default is false.
+    
+    private $catalog_visibility;    //	string	Catalog visibility. Options: visible, catalog, search and hidden. Default is visible.
+    
+    private $description;           //	string	Product description.
+    
+    private $short_description;     //	string	Product short description.
+    
+    private $sku;                   //	string	Unique identifier.
+    
+    private $price;                 //	string	Current product price. READ-ONLY
+    
+    private $regular_price;         //	string	Product regular price.
+    
+    private $sale_price;            //	string	Product sale price.
+    
+    private $date_on_sale_from;     //	date-time	Start date of sale price, in the site’s timezone.
+    
+    private $date_on_sale_from_gmt; //	date-time	Start date of sale price, as GMT.
+    
+    private $date_on_sale_to;       //	date-time	End date of sale price, in the site’s timezone.
+    
+    private $date_on_sale_to_gmt;   //	date-time	End date of sale price, in the site’s timezone.
+    
+    private $price_html;            //	string	Price formatted in HTML. READ-ONLY
+    
+    private $on_sale;	            //  boolean	Shows if the product is on sale. READ-ONLY
+    
+    private $purchasable;	        //boolean	Shows if the product can be bought. READ-ONLY
+    
+    private $total_sales;	        // integer	Amount of sales. READ-ONLY
+    
+    private $virtual;	            //boolean	If the product is virtual. Default is false.
+    
+    private $downloadable;          //	boolean	If the product is downloadable. Default is false.
+    
+    private $downloads;             //	array	List of downloadable files. See Product - Downloads properties
+    
+    private $download_limit;        //	integer	Number of times downloadable files can be downloaded after purchase. Default is -1.
+    
+    private $download_expiry;       //	integer	Number of days until access to downloadable files expires. Default is -1.
     
     
     function createProduct($title, $type = 'simple', $regular_price, $description, $short_description, $sku, $taxable = false, $managing_stock = false, $stock_quantity = null, $in_stock = false, $backorders_allowed = false, $backordered = false){
