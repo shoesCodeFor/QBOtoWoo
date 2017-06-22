@@ -1,19 +1,32 @@
 <?php
 
-/*
-        Products - lets code out some docs
+/** QBOtoWoo
+ *
+ * WooProduct.php - A Component of QBOtoWoo
+ * A general class for manipulating product objects in our plugin
+ * Pulled from the WooCommerce API Docs http://woocommerce.github.io/
+ *
+ * This is probably obsessive, but I like details
+ **/
+class WooProduct {
 
-        The products API allows you to create, view, update, and delete individual, or a batch, of products.
-*/
-
-// Product properties
-class WooProducts {
-    //  This is probably obssessive, but I like details
     private $id;	          // integer	Unique identifier for the resource. READ-ONLY
     
     private $name;	          // string	    Product name.
     
-    private $slug;            // string     Product slug.
+    private $type;             //	string	Product type. Options: simple, grouped, external and variable. Default is simple.
+
+    private $description;           //	string	Product description.
+
+    private $short_description;     //	string	Product short description.
+
+    private $sku;                   //	string	Unique identifier.
+
+    private $price;                 //	string	Current product price. READ-ONLY
+
+    private $regular_price;         //	string	Product regular price.
+
+    private $sale_price;            //	string	Product sale price.
     
     private $date_created;    // permalink	string	Product URL. READ-ONLY
     
@@ -22,26 +35,14 @@ class WooProducts {
     private $date_modified;	  // date-time	The date the product was last modified, in the site’s timezone. READ-ONLY
     
     private $date_modified_gmt;// date-time	The date the product was last modified, as GMT. READ-ONLY
-    
-    private $type;             //	string	Product type. Options: simple, grouped, external and variable. Default is simple.
+
+    private $slug;            // string     Product slug.
     
     private $status;                //	string	Product status (post status). Options: draft, pending, private and publish. Default is publish.
     
     private $featured;              //	boolean	Featured product. Default is false.
     
     private $catalog_visibility;    //	string	Catalog visibility. Options: visible, catalog, search and hidden. Default is visible.
-    
-    private $description;           //	string	Product description.
-    
-    private $short_description;     //	string	Product short description.
-    
-    private $sku;                   //	string	Unique identifier.
-    
-    private $price;                 //	string	Current product price. READ-ONLY
-    
-    private $regular_price;         //	string	Product regular price.
-    
-    private $sale_price;            //	string	Product sale price.
     
     private $date_on_sale_from;     //	date-time	Start date of sale price, in the site’s timezone.
     
@@ -55,11 +56,11 @@ class WooProducts {
     
     private $on_sale;	            //  boolean	Shows if the product is on sale. READ-ONLY
     
-    private $purchasable;	        //boolean	Shows if the product can be bought. READ-ONLY
+    private $purchasable;	        //  boolean	Shows if the product can be bought. READ-ONLY
     
-    private $total_sales;	        // integer	Amount of sales. READ-ONLY
+    private $total_sales;	        //  integer	Amount of sales. READ-ONLY
     
-    private $virtual;	            //boolean	If the product is virtual. Default is false.
+    private $virtual;	            //  boolean	If the product is virtual. Default is false.
     
     private $downloadable;          //	boolean	If the product is downloadable. Default is false.
     
@@ -68,12 +69,40 @@ class WooProducts {
     private $download_limit;        //	integer	Number of times downloadable files can be downloaded after purchase. Default is -1.
     
     private $download_expiry;       //	integer	Number of days until access to downloadable files expires. Default is -1.
-    
-    
-    function createProduct($title, $type = 'simple', $regular_price, $description, $short_description, $sku, $taxable = false, $managing_stock = false, $stock_quantity = null, $in_stock = false, $backorders_allowed = false, $backordered = false){
+
+    private static $num_products_created = 0;
+
+    public function __construct
+    (
+        $in_product_id,
+        $in_product_name,
+        $in_regular_price,
+        $in_prod_short_desc,
+        $in_description,
+        $in_sku
+    )
+    {
+        $this->id = $in_product_id;
+        $this->name = $in_product_name;
+        $this->regular_price = $in_regular_price;
+        $this->short_description = $in_prod_short_desc;
+        $this->description = $in_description;
+        $this->sku = $in_sku;
+
+        // We'll use this number to report to the user
+        self::$num_products_created++;
+        echo "You created " . self::$num_products_created
+            . " Products<br/>\n";
+    }
+
+
+
+    function createProduct($name, $type = 'simple', $regular_price, $description, $short_description,
+                           $sku, $taxable = false, $managing_stock = false, $stock_quantity = null, $in_stock = false,
+                           $woo_connection){
         $data = [
             'product' => [
-                'title' => $title,
+                'name' => $name,
                 'type' => $type,
                 'regular_price' => $regular_price,
                 'description' => $description,
@@ -86,9 +115,9 @@ class WooProducts {
             ]
         ];
 
-        print_r($woocommerce->post('products', $data));
+        print_r($woo_connection->post('products', $data));
         
-    }
+    } // End of createProduct()
     
   
         
@@ -186,7 +215,6 @@ Attribute	Type	Description
 id	integer	Meta ID. READ-ONLY
 key	string	Meta key.
 value	string	Meta value.
-
 */
 
 ?>
