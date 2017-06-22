@@ -13,7 +13,7 @@ class WooProduct {
     private $id;	          // integer	Unique identifier for the resource. READ-ONLY
     
     private $name;	          // string	    Product name.
-    
+
     private $type;             //	string	Product type. Options: simple, grouped, external and variable. Default is simple.
 
     private $description;           //	string	Product description.
