@@ -10,23 +10,31 @@
  **/
 class WooProduct {
 
-    private $id;	          // integer	Unique identifier for the resource. READ-ONLY
-    
-    private $name;	          // string	    Product name.
-
-    private $type;             //	string	Product type. Options: simple, grouped, external and variable. Default is simple.
-
-    private $description;           //	string	Product description.
-
-    private $short_description;     //	string	Product short description.
-
-    private $sku;                   //	string	Unique identifier.
-
-    private $price;                 //	string	Current product price. READ-ONLY
-
-    private $regular_price;         //	string	Product regular price.
-
-    private $sale_price;            //	string	Product sale price.
+    private $id;	                 // integer	Unique identifier for the resource. READ-ONLY
+    private $name;	                 // string	Product name.
+    private $type = 'simple';        //	string	Product type. Options: simple, grouped, external and variable. Default is simple.
+    private $description;            //	string	Product description.
+    private $short_description;      //	string	Product short description.
+    private $sku;                    //	string	Unique identifier.
+    private $price;                  //	string	Current product price. READ-ONLY
+    private $regular_price;          //	string	Product regular price.
+    private $sale_price;             //	string	Product sale price.
+    private $tax_status = 'none';    //	string	Tax status. Options: taxable, shipping and none. Default is taxable.
+    private $tax_class;	             //  string	Tax class.
+    private $manage_stock = false;	         // boolean	Stock management at product level. Default is false.
+    private $stock_quantity;         //	integer	Stock quantity.
+    private $in_stock = false;               //	boolean	Controls whether or not the product is listed as “in stock” or “out of stock” on the frontend. Default is true.
+    private $backorders;             //	string	If managing stock, this controls if backorders are allowed. Options: no, notify and yes. Default is no.
+    private $backorders_allowed;     //	boolean	Shows if backorders are allowed. READ-ONLY
+    private $backordered;            //	boolean	Shows if the product is on backordered. READ-ONLY
+    private $status;                //	string	Product status (post status). Options: draft, pending, private and publish. Default is publish.
+    private $sold_individually;	     //  boolean	Allow one item to be bought in a single order. Default is false.
+    private $weight;                 //	string	Product weight (kg).
+    private $dimensions;             //	object	Product dimensions. See Product - Dimensions properties
+    private $shipping_required;      //	boolean	Shows if the product need to be shipped. READ-ONLY
+    private $shipping_taxable;       //	boolean	Shows whether or not the product shipping is taxable. READ-ONLY
+    private $shipping_class;         //	string	Shipping class slug.
+    private $shipping_class_id;      //	string	Shipping class ID. READ-ONLY
     
     private $date_created;    // permalink	string	Product URL. READ-ONLY
     
@@ -37,8 +45,6 @@ class WooProduct {
     private $date_modified_gmt;// date-time	The date the product was last modified, as GMT. READ-ONLY
 
     private $slug;            // string     Product slug.
-    
-    private $status;                //	string	Product status (post status). Options: draft, pending, private and publish. Default is publish.
     
     private $featured;              //	boolean	Featured product. Default is false.
     
@@ -72,28 +78,44 @@ class WooProduct {
 
     private static $num_products_created = 0;
 
+    // Barebones constructor for creating a product
     public function __construct
     (
-        $in_product_id,
+        $in_sku,
         $in_product_name,
         $in_regular_price,
         $in_prod_short_desc,
-        $in_description,
-        $in_sku
+        $in_manage_stock,
+        $in_stock_quantity
     )
     {
-        $this->id = $in_product_id;
+        $this->sku = $in_sku;
         $this->name = $in_product_name;
         $this->regular_price = $in_regular_price;
         $this->short_description = $in_prod_short_desc;
-        $this->description = $in_description;
-        $this->sku = $in_sku;
+        $this->manage_stock = $in_manage_stock;
+        $this->stock_quantity = $in_stock_quantity;
 
         // We'll use this number to report to the user
         self::$num_products_created++;
         echo "You created " . self::$num_products_created
             . " Products<br/>\n";
     }
+
+    public function setID($in_id){
+        $this->id = $in_id;
+    }
+
+    public function fetchProductData($woo_connection, $id){
+        $woo_connection->get('/product/' . $id);
+    }
+
+    public function batchCreate($woo_connection, $prod_array){
+        print_r($woo_connection->post('products/batch', $prod_array));
+
+    }
+
+
 
 
 
@@ -126,21 +148,7 @@ class WooProduct {
 
 external_url	string	Product external URL. Only for external products.
 button_text	string	Product external button text. Only for external products.
-tax_status	string	Tax status. Options: taxable, shipping and none. Default is taxable.
-tax_class	string	Tax class.
-manage_stock	boolean	Stock management at product level. Default is false.
-stock_quantity	integer	Stock quantity.
-in_stock	boolean	Controls whether or not the product is listed as “in stock” or “out of stock” on the frontend. Default is true.
-backorders	string	If managing stock, this controls if backorders are allowed. Options: no, notify and yes. Default is no.
-backorders_allowed	boolean	Shows if backorders are allowed. READ-ONLY
-backordered	boolean	Shows if the product is on backordered. READ-ONLY
-sold_individually	boolean	Allow one item to be bought in a single order. Default is false.
-weight	string	Product weight (kg).
-dimensions	object	Product dimensions. See Product - Dimensions properties
-shipping_required	boolean	Shows if the product need to be shipped. READ-ONLY
-shipping_taxable	boolean	Shows whether or not the product shipping is taxable. READ-ONLY
-shipping_class	string	Shipping class slug.
-shipping_class_id	string	Shipping class ID. READ-ONLY
+
 reviews_allowed	boolean	Allow reviews. Default is true.
 average_rating	string	Reviews average rating. READ-ONLY
 rating_count	integer	Amount of reviews that the product have. READ-ONLY
