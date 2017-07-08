@@ -1,5 +1,7 @@
 <?php
+/*  This config file create an ini file with the user's API keys and our keys for QBO.
 
+*/
 function write_php_ini($array, $file)
 {
     $res = array();
