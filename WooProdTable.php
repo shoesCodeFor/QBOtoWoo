@@ -63,10 +63,10 @@
         const optionsDiv = document.querySelector(visibilityToggle);
         const mainDiv = document.querySelector(targetDiv);
         // Create a table
-        const aTable = document.createElement('table');
-        aTable.setAttribute('class', 'table');
+        const Table = document.createElement('table');
+        Table.setAttribute('class', 'table');
         // The header
-        const header = aTable.createTHead();
+        const header = Table.createTHead();
         header.setAttribute('class', 'thead-inverse');
         var attrList = [];
         th = header.insertRow(0);
@@ -77,11 +77,19 @@
         name_th.innerHTML = 'Name';
         var sku_th = th.insertCell(2);
         sku_th.innerHTML = 'SKU';
-        aTable.appendChild(th);
+        var sku_th = th.insertCell(3);
+        sku_th.innerHTML = 'Manage Inventory?';
+        var sku_th = th.insertCell(4);
+        sku_th.innerHTML = 'Quantity';
+        var sku_th = th.insertCell(5);
+        sku_th.innerHTML = 'Price';
+        var sku_th = th.insertCell(6);
+        sku_th.innerHTML = 'Price';
+        Table.appendChild(th);
 
         // Check if an products are created
         for (var [key, value] of Object.entries(an_object_array[0])) {
-            //console.log(key + ' ' + value); // Will Return our list of attributes and table headings
+            console.log(key + ' ' + value); // Will Return our list of attributes and table headings
             attrList.push(key);
         }
         if(visibilityToggle.length > 1){
